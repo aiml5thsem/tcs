@@ -1,1 +1,2 @@
-
+- postgres mcp : https://github.com/crystaldba/postgres-mcp
+- 
