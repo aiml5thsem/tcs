@@ -9,3 +9,5 @@ Plotly and Altair are excellent choices that share many of the same core philoso
 Python using powerful dashboarding frameworks that support a wide variety of charts. The most popular and well-suited option for this task is Dash, by Plotly.
 https://dash.plotly.com/layout
 * **https://plotly.com/python/plotly-express/**
+  - https://github.com/arshlibruh/plotly-mcp-cursor
+  - https://lobehub.com/mcp/arshlibruh-plotly-mcp-cursor
