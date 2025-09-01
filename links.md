@@ -5,3 +5,4 @@
 - https://github.com/xlisp/visualization-mcp-server
 - https://github.com/ash1998/excel-mcp
 - 
+Plotly and Altair are excellent choices that share many of the same core philosophies.
