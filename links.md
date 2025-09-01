@@ -1,2 +1,7 @@
 - postgres mcp : https://github.com/crystaldba/postgres-mcp
+- https://github.com/reading-plus-ai/mcp-server-data-exploration
+- https://github.com/alistairwalsh/mcp_pandas/blob/main/python/server.py
+- https://github.com/tofunori/claude-mcp-data-explorer/tree/main/claude_mcp_data_explorer
+- https://github.com/xlisp/visualization-mcp-server
+- https://github.com/ash1998/excel-mcp
 - 
