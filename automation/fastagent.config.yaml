@@ -1,0 +1,6 @@
+# MCP Server configuration for fast-agent
+mcp:
+  servers:
+    computer_control:
+      command: "python"
+      args: ["mcp_tools.py"]

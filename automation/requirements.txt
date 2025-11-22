@@ -1,0 +1,41 @@
+###################
+# UNIVERSAL (ALL OS)
+###################
+
+pyautogui
+pillow
+pyscreeze
+pyperclip          # Clipboard
+pygetwindow        # Window operations
+fastmcp            # Core MCP protocol/library
+
+# --- Pydantic AI / Unified LLM function-calling agent ---
+pydantic-ai
+
+# --- Fast-agent-mcp (NextGen orchestration and workflows) ---
+fast-agent-mcp
+
+# --- LangGraph/LangChain (universal agents) ---
+langgraph
+langchain
+langchain-google-genai
+langchain-anthropic
+langchain-openai
+
+# --- LLM API clients (direct, for fallback or native prompt work) ---
+openai
+anthropic
+google-generativeai
+
+###################
+# WINDOWS ONLY
+###################
+
+pywinauto          # (optional: advanced native Win API window/control)
+pytesseract        # OCR (needs Tesseract binary installed separately)
+
+###################
+# MAC OS ONLY 
+###################
+# ocrmac
+
