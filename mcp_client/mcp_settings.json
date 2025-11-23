@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "testing": {
+      "transport": "stdio",
+      "command": "python",
+      "args": [
+        "server.py"
+      ]
+    }
+  }
+}

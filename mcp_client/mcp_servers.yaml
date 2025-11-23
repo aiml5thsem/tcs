@@ -1,0 +1,15 @@
+servers:
+  # computer-control:
+  #   transport: stdio
+  #   command: python
+  #   args:
+  #     - "server2.py"
+  #   env: {}
+  mcp:
+    transport: streamable-http
+    url: "http://localhost:8000/mcp"
+
+settings:
+  enableTools: true
+  enableResources: false
+  enablePrompts: false

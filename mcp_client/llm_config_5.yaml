@@ -1,0 +1,246 @@
+# LLM Provider Configuration
+# Define your LLM profiles with models, system prompts, and API configurations
+
+# Default profile to use on startup
+defaultProfile: fast
+
+# LLM Profile Definitions
+profiles:
+  # Fast local model (no API key needed)
+  fast:
+    name: "Fast Local"
+    provider: ollama
+    model: llama3.2
+    systemPrompt: |
+      You are a helpful AI assistant with access to MCP tools and resources.
+      Be concise and accurate in your responses.
+    
+    # Optional overrides
+    apiBase: "http://localhost:11434"  # Custom Ollama endpoint
+    
+    # Generation parameters
+    temperature: 0.7
+    maxTokens: 4096
+    topP: 0.9
+    
+    # No fallbacks for local model
+    fallbacks: []
+  
+  # Advanced reasoning with Claude
+  advanced:
+    name: "Advanced Reasoning"
+    provider: anthropic
+    model: claude-3-5-sonnet-20241022
+    
+    # API configuration
+    apiKey: "${ANTHROPIC_API_KEY}"  # From environment or .env
+    
+    systemPrompt: |
+      You are an advanced AI assistant with deep reasoning capabilities.
+      You have access to various MCP tools, resources, and prompts.
+      
+      When solving problems:
+      1. Think step by step about what information you need
+      2. Use appropriate MCP tools to gather data
+      3. Analyze and synthesize the results
+      4. Provide clear, well-reasoned responses
+      5. Always verify your reasoning
+      
+      Use markdown formatting for clarity. Be thorough but concise.
+    
+    temperature: 0.7
+    maxTokens: 8192
+    
+    # Fallback chain for reliability
+    fallbacks:
+      - provider: openai
+        model: gpt-4o
+        apiKey: "${OPENAI_API_KEY}"
+      
+      - provider: groq
+        model: llama-3.3-70b-versatile
+        apiKey: "${GROQ_API_KEY}"
+  
+  # Code expert profile
+  coding:
+    name: "Code Expert"
+    provider: openai
+    model: gpt-4o
+    apiKey: "${OPENAI_API_KEY}"
+    
+    systemPrompt: |
+      You are an expert software engineer with access to filesystem, git,
+      and development tools through MCP.
+      
+      When helping with code:
+      - Read relevant files before making suggestions
+      - Consider the full project context
+      - Write clean, well-documented, maintainable code
+      - Follow language-specific best practices
+      - Suggest tests and error handling
+      - Use MCP tools proactively to understand the codebase
+      
+      Always explain your reasoning and provide alternatives when appropriate.
+    
+    temperature: 0.3  # Lower temperature for more deterministic code
+    maxTokens: 8192
+    
+    fallbacks:
+      - provider: anthropic
+        model: claude-3-5-sonnet-20241022
+        apiKey: "${ANTHROPIC_API_KEY}"
+  
+  # Research assistant profile
+  research:
+    name: "Research Assistant"
+    provider: gemini
+    model: gemini-2.0-flash-exp
+    apiKey: "${GEMINI_API_KEY}"
+    
+    systemPrompt: |
+      You are a research assistant specializing in information gathering and analysis.
+      You have access to various data sources through MCP resources and tools.
+      
+      Your research methodology:
+      1. Identify relevant resources and data sources
+      2. Gather comprehensive information from multiple sources
+      3. Cross-reference and verify information
+      4. Analyze patterns and trends
+      5. Provide well-cited, accurate summaries
+      6. Highlight any uncertainties or conflicting information
+      
+      Always cite your sources using available MCP resources.
+      Present information in a clear, organized manner.
+    
+    temperature: 0.5
+    maxTokens: 8192
+    
+    fallbacks:
+      - provider: anthropic
+        model: claude-3-5-sonnet-20241022
+        apiKey: "${ANTHROPIC_API_KEY}"
+  
+  # Vision/multimodal expert
+  vision:
+    name: "Vision Expert"
+    provider: anthropic
+    model: claude-3-5-sonnet-20241022
+    apiKey: "${ANTHROPIC_API_KEY}"
+    
+    systemPrompt: |
+      You are an expert at analyzing visual content.
+      
+      When provided with images:
+      1. Describe what you see in comprehensive detail
+      2. Identify key elements, objects, and their relationships
+      3. Provide context and interpretation
+      4. Answer specific questions about the image accurately
+      5. Highlight any text, symbols, or important details
+      
+      Be thorough, accurate, and objective in your visual analysis.
+    
+    temperature: 0.5
+    maxTokens: 4096
+    
+    fallbacks:
+      - provider: openai
+        model: gpt-4o
+        apiKey: "${OPENAI_API_KEY}"
+  
+  # Fast inference with Groq
+  groq-fast:
+    name: "Ultra Fast"
+    provider: groq
+    model: llama-3.3-70b-versatile
+    apiKey: "${GROQ_API_KEY}"
+    
+    systemPrompt: |
+      You are a quick-response AI assistant.
+      Provide concise, accurate answers.
+      Use MCP tools when needed but prioritize speed.
+    
+    temperature: 0.7
+    maxTokens: 4096
+    
+    fallbacks:
+      - provider: ollama
+        model: llama3.2
+        apiBase: "http://localhost:11434"
+  
+  # Custom provider example (OpenAI-compatible endpoint)
+  custom-local:
+    name: "Custom Local Model"
+    provider: openai  # Use OpenAI-compatible format
+    model: custom-model-name
+    
+    # Point to your custom endpoint
+    apiBase: "http://localhost:8000/v1"
+    apiKey: "not-needed"  # Some local servers don't need keys
+    
+    systemPrompt: "You are a helpful assistant."
+    temperature: 0.7
+    maxTokens: 4096
+    fallbacks: []
+  
+  # LiteLLM Proxy example
+  proxy:
+    name: "Via LiteLLM Proxy"
+    provider: openai  # Proxy is OpenAI-compatible
+    model: gpt-4o  # Model name as configured in proxy
+    
+    apiBase: "http://localhost:4000/v1"
+    apiKey: "${LITELLM_PROXY_KEY}"  # Your proxy master key
+    
+    systemPrompt: "You are a helpful assistant."
+    temperature: 0.7
+    maxTokens: 4096
+    fallbacks: []
+  
+  # Azure OpenAI example
+  azure:
+    name: "Azure OpenAI"
+    provider: azure
+    model: gpt-4o
+    
+    apiKey: "${AZURE_API_KEY}"
+    apiBase: "${AZURE_API_BASE}"  # e.g., https://your-resource.openai.azure.com
+    apiVersion: "2024-02-15-preview"
+    
+    systemPrompt: "You are a helpful assistant."
+    temperature: 0.7
+    maxTokens: 4096
+    fallbacks: []
+  
+  # AWS Bedrock example
+  bedrock:
+    name: "AWS Bedrock"
+    provider: bedrock
+    model: anthropic.claude-3-5-sonnet-20241022-v2:0
+    
+    # AWS credentials from environment
+    awsRegion: "us-east-1"
+    awsAccessKeyId: "${AWS_ACCESS_KEY_ID}"
+    awsSecretAccessKey: "${AWS_SECRET_ACCESS_KEY}"
+    
+    systemPrompt: "You are a helpful assistant."
+    temperature: 0.7
+    maxTokens: 4096
+    fallbacks: []
+
+# Global LLM Settings
+settings:
+  # Execution limits
+  maxIterations: 10  # Max tool calling iterations
+  requestTimeout: 120  # seconds
+  
+  # Retry configuration
+  maxRetries: 3
+  retryDelay: 2  # seconds
+  
+  # Cache configuration (optional)
+  enableCaching: true
+  cacheExpiry: 3600  # seconds
+  
+  # Debug mode
+  debugMode: false
+  logRequests: false

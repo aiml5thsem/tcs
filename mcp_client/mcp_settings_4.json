@@ -1,0 +1,110 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+    },
+    "github": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "your-token-here"
+      }
+    }
+  },
+  
+  "llmProfiles": {
+    "default": {
+      "name": "Fast Local",
+      "provider": "ollama",
+      "model": "llama3.2",
+      "systemPrompt": "You are a helpful AI assistant with access to MCP tools and resources. Be concise and accurate.",
+      "fallbacks": [],
+      "temperature": 0.7,
+      "maxTokens": 4096
+    },
+    
+    "advanced": {
+      "name": "Advanced Claude",
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022",
+      "systemPrompt": "You are an advanced AI assistant with deep reasoning capabilities. You have access to various MCP tools, resources, and prompts. When using tools:\n1. Think step by step about what information you need\n2. Use appropriate tools to gather information\n3. Synthesize the results into a coherent response\n4. Always verify your reasoning\n\nBe thorough but concise. Use markdown formatting for clarity.",
+      "fallbacks": [
+        {"provider": "openai", "model": "gpt-4o"},
+        {"provider": "groq", "model": "llama-3.3-70b-versatile"}
+      ],
+      "temperature": 0.7,
+      "maxTokens": 8192
+    },
+    
+    "coding": {
+      "name": "Code Expert",
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are an expert software engineer. You have access to filesystem, git, and other development tools through MCP.\n\nWhen helping with code:\n- Read relevant files before making suggestions\n- Consider the full project context\n- Write clean, well-documented code\n- Follow best practices and patterns\n- Test your solutions\n\nUse tools proactively to understand the codebase.",
+      "fallbacks": [
+        {"provider": "anthropic", "model": "claude-3-5-sonnet-20241022"}
+      ],
+      "temperature": 0.3,
+      "maxTokens": 8192
+    },
+    
+    "research": {
+      "name": "Research Assistant",
+      "provider": "gemini",
+      "model": "gemini-2.0-flash-exp",
+      "systemPrompt": "You are a research assistant specializing in information gathering and analysis. You have access to various data sources through MCP resources and tools.\n\nYour approach:\n1. Identify relevant resources and data sources\n2. Gather comprehensive information\n3. Cross-reference multiple sources\n4. Provide well-cited, accurate summaries\n5. Highlight any uncertainties or conflicting information\n\nAlways cite your sources using the available MCP resources.",
+      "fallbacks": [
+        {"provider": "anthropic", "model": "claude-3-5-sonnet-20241022"}
+      ],
+      "temperature": 0.5,
+      "maxTokens": 8192
+    },
+    
+    "creative": {
+      "name": "Creative Writer",
+      "provider": "openai",
+      "model": "gpt-4o",
+      "systemPrompt": "You are a creative writing assistant. Help users with:\n- Story development and plotting\n- Character creation and development\n- Dialogue and scene writing\n- Editing and refinement\n\nUse available prompts and templates when appropriate. Be imaginative but maintain consistency with established context.",
+      "fallbacks": [],
+      "temperature": 0.9,
+      "maxTokens": 8192
+    },
+    
+    "vision": {
+      "name": "Vision Expert",
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022",
+      "systemPrompt": "You are an expert at analyzing visual content. When provided with images:\n1. Describe what you see in detail\n2. Identify key elements, objects, and relationships\n3. Provide context and interpretation\n4. Answer specific questions about the image\n\nBe thorough and accurate in your visual analysis.",
+      "fallbacks": [
+        {"provider": "openai", "model": "gpt-4o"}
+      ],
+      "temperature": 0.5,
+      "maxTokens": 4096
+    },
+    
+    "fast": {
+      "name": "Fast Response",
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "systemPrompt": "You are a quick-response AI assistant. Provide concise, accurate answers. Use MCP tools when needed but prioritize speed.",
+      "fallbacks": [
+        {"provider": "ollama", "model": "llama3.2"}
+      ],
+      "temperature": 0.7,
+      "maxTokens": 2048
+    }
+  },
+  
+  "defaultProfile": "default",
+  
+  "globalSettings": {
+    "maxIterations": 10,
+    "enableToolCalling": true,
+    "enableResources": true,
+    "enablePrompts": true,
+    "debugMode": false
+  }
+}

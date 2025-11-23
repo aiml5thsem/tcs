@@ -1,0 +1,68 @@
+# MCP Server Configuration
+# Configure your Model Context Protocol servers here
+
+servers:
+  filesystem:
+    transport: stdio
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "/tmp"
+    env: {}
+  
+  github:
+    transport: stdio
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-github"
+    env:
+      GITHUB_PERSONAL_ACCESS_TOKEN: "${GITHUB_TOKEN}"  # From environment
+  
+  sqlite:
+    transport: stdio
+    command: uvx
+    args:
+      - mcp-server-sqlite
+      - --db-path
+      - "./database.db"
+    env: {}
+  
+  postgres:
+    transport: stdio
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-postgres"
+      - "postgresql://localhost/mydb"
+    env: {}
+  
+  # Remote HTTP server example
+  remote-api:
+    transport: streamable-http
+    url: "https://your-mcp-server.com/mcp"
+    headers:
+      Authorization: "Bearer ${MCP_API_TOKEN}"
+  
+  # SSE transport example
+  remote-sse:
+    transport: sse
+    url: "https://your-sse-server.com/sse"
+    headers:
+      X-API-Key: "${MCP_SSE_TOKEN}"
+
+# Global MCP Settings
+settings:
+  # Enable/disable MCP features globally
+  enableTools: true
+  enableResources: true
+  enablePrompts: true
+  
+  # Timeouts
+  connectionTimeout: 30  # seconds
+  requestTimeout: 60     # seconds
+  
+  # Retry configuration
+  maxRetries: 3
+  retryDelay: 1  # seconds

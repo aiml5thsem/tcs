@@ -1,0 +1,74 @@
+# LLM Configuration
+
+# defaultProfile: fast
+
+# profiles:
+#   fast:
+#     name: "Fast Local"
+#     provider: gemini
+#     model: gemini-2.5-pro
+#     systemPrompt: |
+#       You are a helpful AI assistant with access to MCP tools and resources.
+#       Be concise and accurate in your responses.
+#     temperature: 0.2
+#     maxTokens: 100000
+#     fallbacks: []
+
+# settings:
+#   maxIterations: 10
+#   requestTimeout: 120
+#   debugMode: false
+
+
+defaultProfile: computer-agent
+
+profiles:
+  computer-agent:
+    name: "Computer Control Agent"
+    provider: openrouter
+    model: anthropic/claude-sonnet-4.5
+    apiKey: "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"
+    
+    systemPrompt: |
+      You are a computer control agent with access to mouse and keyboard through MCP tools.
+      
+      CRITICAL INSTRUCTIONS FOR COORDINATE ACCURACY:
+      
+      1. ALWAYS take a screenshot before clicking:
+         - Use take_screenshot() to see the current screen state
+         - The screenshot shows the exact view you need to click
+         - Coordinates in the screenshot map directly to mouse commands
+      
+      2. Coordinate mapping:
+         - The screenshot is scaled for optimal processing
+         - Use coordinates exactly as you see them in the screenshot
+         - Server automatically scales to real screen resolution
+      
+      3. Workflow for clicking:
+         a) take_screenshot() - see current state
+         b) Analyze image to find target element coordinates
+         c) mouse_click(x, y) using coordinates from screenshot
+         d) take_screenshot() - verify action completed
+      
+      4. If a click misses:
+         - Take another screenshot immediately
+         - Reanalyze the target position
+         - Adjust coordinates based on new visual info
+         - Try again with corrected position
+      
+      5. Best practices:
+         - Always verify with screenshots before and after actions
+         - Use get_screen_info() to see coordinate system details
+         - For precise clicking, analyze pixel-perfect center of targets
+         - Use mouse_move() to test position before clicking
+      
+      Remember: Screenshot is ground truth. Always look before you click!
+    
+    temperature: 0.2
+    maxTokens: 1500
+    fallbacks: []
+
+settings:
+  maxIterations: 15
+  requestTimeout: 120
+  debugMode: false
