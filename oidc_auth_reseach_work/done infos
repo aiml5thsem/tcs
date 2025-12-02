@@ -1,0 +1,142 @@
+{
+  "authorization_endpoint": "http://localhost:9400/oauth2/authorize",
+  "end_session_endpoint": "http://localhost:9400/oauth2/end_session",
+  "grant_types_supported": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "id_token_signing_alg_values_supported": [
+    "RS256"
+  ],
+  "issuer": "http://localhost:9400",
+  "jwks_uri": "http://localhost:9400/jwks",
+  "registration_endpoint": "http://localhost:9400/oauth2/clients",
+  "response_modes_supported": [
+    "query"
+  ],
+  "response_types_supported": [
+    "code"
+  ],
+  "scopes_supported": [
+    "openid",
+    "profile",
+    "email",
+    "address",
+    "phone"
+  ],
+  "subject_types_supported": [
+    "public"
+  ],
+  "token_endpoint": "http://localhost:9400/oauth2/token",
+  "userinfo_endpoint": "http://localhost:9400/userinfo"
+}
+
+
+
+
+
+
+curl -X POST http://localhost:9400/oauth2/clients ^
+-H "Content-Type: application/json" ^
+-d "{\"grant_types\":[\"password\",\"client_credentials\"],\"redirect_uris\":[],\"response_types\":[\"code\"],\"scope\":\"openid profile\"}"
+{
+  "client_id": "1c8d099b-a46b-4884-aacb-3bedb6e40eae",
+  "client_secret": "8eE_BSsoreECfUuTGiF1UA",
+  "grant_types": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "redirect_uris": [],
+  "response_types": [
+    "code"
+  ],
+  "token_endpoint_auth_method": "client_secret_basic"
+}
+
+curl -X POST http://localhost:9400/oauth2/clients ^
+-H "Content-Type: application/json" ^
+-d "{\"grant_types\":[\"password\",\"client_credentials\"],\"redirect_uris\":[\"https://oidcdebugger.com/debug\"],\"response_types\":[\"code\"],\"scope\":\"openid profile\"}"
+
+{
+  "client_id": "2c26bcf9-06ca-4994-af9d-cfe011527521",
+  "client_secret": "lOAbY3xQdf80MxQpvy3Lhg",
+  "grant_types": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "redirect_uris": [
+    "https://oidcdebugger.com/debug"
+  ],
+  "response_types": [
+    "code"
+  ],
+  "token_endpoint_auth_method": "client_secret_basic"
+}
+
+https://unlustrous-argentina-unepigrammatically.ngrok-free.dev/oauth2/authorize
+
+
+mcp_auth_learn) D:\tcs_projects\mcp_auth_learn\scalekit_reference_video>curl -X POST http://localhost:9400/oauth2/clients ^
+More?   -H "Content-Type: application/json" ^
+More?   -d "{\"grant_types\":[\"password\",\"client_credentials\"],\"redirect_uris\":[\"https://oidcdebugger.com/debug\"],\"response_types\":[\"code\"],\"scope\":\"openid profile\"}"
+{
+  "client_id": "1c8d099b-a46b-4884-aacb-3bedb6e40eae",
+  "client_secret": "8eE_BSsoreECfUuTGiF1UA",
+  "grant_types": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "redirect_uris": [],
+  "response_types": [
+    "code"
+  ],
+  "token_endpoint_auth_method": "client_secret_basic"
+}
+
+(mcp_auth_learn) D:\tcs_projects\mcp_auth_learn\scalekit_reference_video>curl http://localhost:9400/.well-known/openid-configuration
+{
+  "authorization_endpoint": "http://localhost:9400/oauth2/authorize",
+  "end_session_endpoint": "http://localhost:9400/oauth2/end_session",
+  "grant_types_supported": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "id_token_signing_alg_values_supported": [
+    "RS256"
+  ],
+  "issuer": "http://localhost:9400",
+  "jwks_uri": "http://localhost:9400/jwks",
+  "registration_endpoint": "http://localhost:9400/oauth2/clients",
+  "response_modes_supported": [
+    "query"
+  ],
+  "response_types_supported": [
+    "code"
+  ],
+  "scopes_supported": [
+    "openid",
+    "profile",
+    "email",
+    "address",
+    "phone"
+  ],
+  "subject_types_supported": [
+    "public"
+  ],
+  "token_endpoint": "http://localhost:9400/oauth2/token",
+  "userinfo_endpoint": "http://localhost:9400/userinfo"
+}
+
+
+
+http://localhost:9400/oauth2/authorize?client_id=1c8d099b-a46b-4884-aacb-3bedb6e40eae&response_type=code&scope=openid profile&redirect_uri=http://localhost
+
+
+REM 2. Login as alice@example.com / alice-secret
+REM 3. Get auth code from redirect URL (?code=xxx)
+
+
+
+curl -s -X POST http://localhost:9400/oauth2/token ^
+  -u "1c8d099b-a46b-4884-aacb-3bedb6e40eae:8eE_BSsoreECfUuTGiF1UA" ^
+  -d "grant_type=authorization_code&code=YOUR_AUTH_CODE&redirect_uri=http://localhost"
