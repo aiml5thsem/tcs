@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "math": {
+      "command": "python",
+      "args": ["./math_server.py"],
+      "transport": "stdio",
+      "description": "Basic arithmetic tools"
+    },
+    "text": {
+      "command": "python",
+      "args": ["./text_server.py"],
+      "transport": "stdio",
+      "description": "Simple text utilities"
+    }
+  }
+}
