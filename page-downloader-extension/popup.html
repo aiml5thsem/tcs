@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+    }
+    h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+    }
+    .counter-display {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .counter-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1a73e8;
+    }
+    .button-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    #downloadBtn {
+      background-color: #1a73e8;
+      color: white;
+    }
+    #downloadBtn:hover {
+      background-color: #1557b0;
+    }
+    #resetBtn {
+      background-color: #ea4335;
+      color: white;
+    }
+    #resetBtn:hover {
+      background-color: #c5221f;
+    }
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    input[type="number"] {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    #setBtn {
+      background-color: #34a853;
+      color: white;
+      padding: 8px 15px;
+    }
+    #setBtn:hover {
+      background-color: #2d8e47;
+    }
+    .format-group {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+    }
+    .format-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #666;
+      font-size: 13px;
+    }
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .status {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      text-align: center;
+      display: none;
+    }
+    .status.success {
+      background-color: #d4edda;
+      color: #155724;
+      display: block;
+    }
+    .status.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h3>Page Content Downloader</h3>
+  
+  <div class="counter-display">
+    <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Next File Number</div>
+    <div class="counter-value" id="counterDisplay">1</div>
+  </div>
+
+  <div class="button-group">
+    <button id="downloadBtn">📥 Download Page</button>
+  </div>
+
+  <div class="button-group">
+    <button id="resetBtn">🔄 Reset to 1</button>
+  </div>
+
+  <div class="input-group">
+    <input type="number" id="counterInput" min="1" placeholder="Set counter to...">
+    <button id="setBtn">Set</button>
+  </div>
+
+  <div class="format-group">
+    <label>Download Format:</label>
+    <select id="formatSelect">
+      <option value="html">HTML (.html)</option>
+      <option value="md">Markdown (.md)</option>
+    </select>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
