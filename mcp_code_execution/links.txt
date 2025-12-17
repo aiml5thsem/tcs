@@ -3,6 +3,7 @@ https://github.com/VRSEN/mcp-code-exec-agent  - 3
 https://github.com/elusznik/mcp-server-code-execution-mode - 2 
 https://github.com/yoloshii/mcp-code-execution-enhanced  *** - 1
 https://github.com/mouadenna/mcp-code-executor-server  
+https://github.com/ipdelete/mcp-code-execution
 
 | Project                      | Token Reduction | Container Isolation | Multi-Transport  | Skills/Progressive | Claude Code Optimized |
 | ---------------------------- | --------------- | ------------------- | ---------------- | ------------------ | --------------------- |
