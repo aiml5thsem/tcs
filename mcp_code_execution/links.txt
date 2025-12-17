@@ -1,0 +1,40 @@
+https://www.anthropic.com/engineering/code-execution-with-mcp => 
+https://github.com/VRSEN/mcp-code-exec-agent  - 3 
+https://github.com/elusznik/mcp-server-code-execution-mode - 2 
+https://github.com/yoloshii/mcp-code-execution-enhanced  *** - 1
+https://github.com/mouadenna/mcp-code-executor-server  
+
+| Project                      | Token Reduction | Container Isolation | Multi-Transport  | Skills/Progressive | Claude Code Optimized |
+| ---------------------------- | --------------- | ------------------- | ---------------- | ------------------ | --------------------- |
+| yoloshii/enhanced            | 99.6%           | Optional (rootless) | ✅ stdio/SSE/HTTP | ✅ Skills framework | ✅ Primary focus       |
+| elusznik/code-execution-mode | 99.6%           | ✅ Required          | ✅ Multiple       | ✅ Via proxying     | ⚠️ Compatible         |
+| VRSEN/code-exec-agent        | 98%             | Configurable        | Depends on impl  | ✅ Filesystem       | ✅ Template-based      |
+| SDGLBL/mcp-claude-code       | N/A             | No                  | stdio            | ⚠️ MCP native      | ✅ Mimics Claude Code  |
+-----------
+
+Direct Code Execution Servers
+bazinga012/mcp_code_executor
+
+Execute Python code within Conda environments
+
+Support for incremental code generation
+
+Dynamic environment configuration at runtime​
+
+Timtech4u/python-mcp-server
+
+Python code execution and environment management
+
+File management (list, read, write Python files)
+
+Configurable timeouts and working directories​
+
+Automata-Labs-team/code-sandbox-mcp
+
+Secure code sandbox environment using Docker containers
+
+Isolated execution for AI applications​
+
+mouadenna/mcp-code-executor-server
+
+Another code execution implementation​
