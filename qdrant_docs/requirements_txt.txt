@@ -1,0 +1,9 @@
+mcp
+qdrant-client
+fastembed
+beautifulsoup4
+html-to-markdown
+tqdm
+starlette
+uvicorn
+lxml
