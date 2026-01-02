@@ -115,14 +115,22 @@ def validate_server_config(config: MCPServerConfig) -> tuple[bool, Optional[str]
         return False, "Server path is required"
     
     # Check for conflicting configurations
-    if config.command and config.proxy_url:
-        return False, f"{config.name}: Cannot specify both command and proxy_url"
+    if config.is_custom() and config.is_proxy():
+        return False, f"{config.name}: Cannot be both custom and proxy server"
     
-    if config.command and not config.proxy_url:
-        return False, f"{config.name}: Must specify either command or proxy_url for proxy"
+    if not config.is_custom() and not config.is_proxy():
+        return False, f"{config.name}: Must specify either tools/resources or proxy config"
     
-    if config.command and not config.args:
-        logger.warning(f"{config.name}: Command specified without args (may be intentional)")
+    # Validate proxy configs
+    if config.is_proxy():
+        if config.command and config.proxy_url:
+            return False, f"{config.name}: Cannot specify both command and proxy_url"
+        
+        if not config.command and not config.proxy_url:
+            return False, f"{config.name}: Must specify either command or proxy_url for proxy"
+        
+        if config.command and not config.args:
+            logger.warning(f"{config.name}: Command specified without args (may be intentional)")
     
     # Validate custom configs
     if config.is_custom():
@@ -147,6 +155,7 @@ def create_custom_server(config: MCPServerConfig) -> FastMCP:
     # Register resources
     for resource_func in config.resources:
         # Generate URI pattern from function signature
+        sig = inspect.signature(resource_func)
         params_names = [
             p for p in sig.parameters.keys()
             if p not in ('self', 'cls', 'context')
@@ -240,81 +249,6 @@ def create_proxy_server(config: MCPServerConfig) -> FastMCP:
         raise Exception(f"Error creating proxy: {e}")
 
 # ============================================================================
-# LIFESPAN MANAGEMENT
-# ============================================================================
-
-@asynccontextmanager
-async def combined_lifespan(app: FastAPI):
-    """
-    Manage all MCP server lifespans with proper error handling.
-    
-    Each MCP server's http_app() has its own lifespan that must be properly managed.
-    This function coordinates all sub-lifespans, entering them in order and exiting
-    in reverse order (LIFO) to handle dependencies correctly.
-    """
-    
-    lifespan_contexts = []
-    
-    try:
-        # Initialize servers first (before starting lifespans)
-        await initialize_servers(app, MCP_SERVERS)
-        
-        # Startup phase - start all server lifespans
-        logger.info(f"\n{'='*70}")
-        logger.info("Starting {len(app.state.mcp_apps)} MCP server(s)...")
-        logger.info(f"{'='*70}\n")
-        
-        for idx, mcp_info in enumerate(app.state.mcp_apps, 1):
-            mcp_app = mcp_info['app']
-            name = mcp_info['name']
-            path = mcp_info['path']
-            is_proxy = mcp_info.get('is_proxy', False)
-            
-            try:
-                # Enter the lifespan context
-                lifespan_ctx = mcp_app.lifespan(mcp_app)
-                await lifespan_ctx.__aenter__()
-                lifespan_contexts.append((name, lifespan_ctx))
-                
-                server_type = "PROXY" if is_proxy else "CUSTOM"
-                logger.info(f"✓ [{idx}/{len(app.state.mcp_apps)}] {server_type}: {name}")
-                logger.info(f"   Path: {path}")
-                logger.info(f"   Endpoint: {path}/mcp\n")
-            
-            except Exception as e:
-                logger.error(f"✗ Failed to start {name}: {e}")
-                # Continue with other servers even if one fails
-                import traceback
-                traceback.print_exc()
-        
-        logger.info(f"{'='*70}")
-        logger.info(f"✓ {len(lifespan_contexts)}/{len(app.state.mcp_apps)} server(s) started successfully")
-        logger.info(f"{'='*70}\n")
-        
-        # Application running
-        yield
-        
-        # Shutdown phase
-        logger.info(f"\n{'='*70}")
-        logger.info("Shutting down MCP servers...")
-        logger.info(f"{'='*70}\n")
-    
-    finally:
-        # Exit all lifespans in REVERSE order (LIFO)
-        for name, lifespan_ctx in reversed(lifespan_contexts):
-            try:
-                await lifespan_ctx.__aexit__(None, None, None)
-                logger.info(f"✓ Shut down: {name}")
-            except Exception as e:
-                logger.error(f"✗ Error shutting down {name}: {e}")
-                import traceback
-                traceback.print_exc()
-        
-        logger.info(f"\n{'='*70}")
-        logger.info("✓ All servers shut down")
-        logger.info(f"{'='*70}\n")
-
-# ============================================================================
 # SERVER INITIALIZATION
 # ============================================================================
 
@@ -404,6 +338,81 @@ async def initialize_servers(app: FastAPI, server_configs: List[MCPServerConfig]
     if successful == 0 and failed > 0:
         logger.error("⚠ NO servers initialized successfully")
         raise RuntimeError("Failed to initialize any MCP servers")
+
+# ============================================================================
+# LIFESPAN MANAGEMENT
+# ============================================================================
+
+@asynccontextmanager
+async def combined_lifespan(app: FastAPI):
+    """
+    Manage all MCP server lifespans with proper error handling.
+    
+    Each MCP server's http_app() has its own lifespan that must be properly managed.
+    This function coordinates all sub-lifespans, entering them in order and exiting
+    in reverse order (LIFO) to handle dependencies correctly.
+    """
+    
+    lifespan_contexts = []
+    
+    try:
+        # Initialize servers first (before starting lifespans)
+        await initialize_servers(app, MCP_SERVERS)
+        
+        # Startup phase - start all server lifespans
+        logger.info(f"\n{'='*70}")
+        logger.info(f"Starting {len(app.state.mcp_apps)} MCP server(s)...")
+        logger.info(f"{'='*70}\n")
+        
+        for idx, mcp_info in enumerate(app.state.mcp_apps, 1):
+            mcp_app = mcp_info['app']
+            name = mcp_info['name']
+            path = mcp_info['path']
+            is_proxy = mcp_info.get('is_proxy', False)
+            
+            try:
+                # Enter the lifespan context
+                lifespan_ctx = mcp_app.lifespan(mcp_app)
+                await lifespan_ctx.__aenter__()
+                lifespan_contexts.append((name, lifespan_ctx))
+                
+                server_type = "PROXY" if is_proxy else "CUSTOM"
+                logger.info(f"✓ [{idx}/{len(app.state.mcp_apps)}] {server_type}: {name}")
+                logger.info(f"   Path: {path}")
+                logger.info(f"   Endpoint: {path}/mcp\n")
+            
+            except Exception as e:
+                logger.error(f"✗ Failed to start {name}: {e}")
+                # Continue with other servers even if one fails
+                import traceback
+                traceback.print_exc()
+        
+        logger.info(f"{'='*70}")
+        logger.info(f"✓ {len(lifespan_contexts)}/{len(app.state.mcp_apps)} server(s) started successfully")
+        logger.info(f"{'='*70}\n")
+        
+        # Application running
+        yield
+    
+    finally:
+        # Shutdown phase
+        logger.info(f"\n{'='*70}")
+        logger.info("Shutting down MCP servers...")
+        logger.info(f"{'='*70}\n")
+        
+        # Exit all lifespans in REVERSE order (LIFO)
+        for name, lifespan_ctx in reversed(lifespan_contexts):
+            try:
+                await lifespan_ctx.__aexit__(None, None, None)
+                logger.info(f"✓ Shut down: {name}")
+            except Exception as e:
+                logger.error(f"✗ Error shutting down {name}: {e}")
+                import traceback
+                traceback.print_exc()
+        
+        logger.info(f"\n{'='*70}")
+        logger.info(f"✓ All servers shut down")
+        logger.info(f"{'='*70}\n")
 
 # ============================================================================
 # DEFINE MCP SERVERS HERE
