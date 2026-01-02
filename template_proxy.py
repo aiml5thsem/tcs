@@ -12,7 +12,7 @@ Features:
 - Health check and tools listing endpoints
 
 Usage:
-uvicorn main:app --host 0.0.0.0 --port 8000
+    uvicorn main:app --host 0.0.0.0 --port 8000
 """
 
 from contextlib import asynccontextmanager
@@ -38,16 +38,16 @@ class MCPServerConfig:
     Configuration class for MCP servers supporting both custom tools and proxy modes.
     
     For Custom Tools Server:
-    - Use tools, resources, prompts parameters
-    
+        - Use tools, resources, prompts parameters
+        
     For Proxy Server (STDIO):
-    - Use command, args, env parameters
-    - Examples: Python scripts, NPX packages, UVX packages
-    
+        - Use command, args, env parameters
+        - Examples: Python scripts, NPX packages, UVX packages
+        
     For Proxy Server (HTTP/SSE):
-    - Use proxy_url and headers parameters
-    - Transport: Optional - specify 'http', 'sse', or 'streamable-http'
-      If not specified, auto-detected from URL (ends with /sse = SSE, otherwise HTTP)
+        - Use proxy_url and headers parameters
+        - Transport: Optional - specify 'http', 'sse', or 'streamable-http'
+        If not specified, auto-detected from URL (ends with /sse = SSE, otherwise HTTP)
     """
     
     def __init__(
@@ -156,15 +156,15 @@ def create_custom_server(config: MCPServerConfig) -> FastMCP:
     for resource_func in config.resources:
         # Generate URI pattern from function signature
         sig = inspect.signature(resource_func)
-        params_names = [
+        param_names = [
             p for p in sig.parameters.keys()
-            if p not in ('self', 'cls', 'context')
+            if p not in ('self', 'ctx', 'context')
         ]
-        if params_names:
-            params_str = '/'.join([f'{{{p}}}' for p in params_names])
-            uri_pattern = f'/{resource_func.__name__}/{params_str}'
+        if param_names:
+            params_str = '/'.join([f'{{{p}}}' for p in param_names])
+            uri_pattern = f"{resource_func.__name__}://{params_str}"
         else:
-            uri_pattern = f'/{resource_func.__name__}/static'
+            uri_pattern = f"{resource_func.__name__}://static"
         
         mcp.resource(uri_pattern)(resource_func)
         logger.debug(f" → Registered resource: {resource_func.__name__} ({uri_pattern})")
@@ -182,7 +182,7 @@ def create_proxy_server(config: MCPServerConfig) -> FastMCP:
     Create a FastMCP proxy server using config-based approach.
     
     This is the CORRECT way to create proxies in FastMCP:
-    1. Build a MCPConfig dictionary
+    1. Build an MCPConfig dictionary
     2. Pass it to FastMCP.as_proxy()
     3. Let FastMCP handle transport creation internally
     """
@@ -246,7 +246,8 @@ def create_proxy_server(config: MCPServerConfig) -> FastMCP:
     except ConnectionError as e:
         raise ConnectionError(f"Cannot connect to {config.proxy_url}") from e
     except Exception as e:
-        raise Exception(f"Error creating proxy: {e}")
+        logger.error(f"Error creating proxy: {e}")
+        raise
 
 # ============================================================================
 # SERVER INITIALIZATION
@@ -372,12 +373,12 @@ async def combined_lifespan(app: FastAPI):
             
             try:
                 # Enter the lifespan context
-                lifespan_ctx = mcp_app.lifespan(mcp_app)
+                lifespan_ctx = mcp_app.lifespan(app)
                 await lifespan_ctx.__aenter__()
                 lifespan_contexts.append((name, lifespan_ctx))
                 
                 server_type = "PROXY" if is_proxy else "CUSTOM"
-                logger.info(f"✓ [{idx}/{len(app.state.mcp_apps)}] {server_type}: {name}")
+                logger.info(f"✓ [{idx}/{len(app.state.mcp_apps)}] [{server_type}] {name}")
                 logger.info(f"   Path: {path}")
                 logger.info(f"   Endpoint: {path}/mcp\n")
             
